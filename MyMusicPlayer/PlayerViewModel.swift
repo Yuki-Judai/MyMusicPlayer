@@ -98,7 +98,7 @@ class PlayerViewModel: NSObject {
 
 extension PlayerViewModel {
     
-    private func checkFileExisiss(at url: URL) -> Bool {
+    private func checkFileExisits(at url: URL) -> Bool {
         return FileManager.default.fileExists(atPath: url.path)
     }
     
@@ -115,7 +115,7 @@ extension PlayerViewModel {
     
     private func createPlayerItem(with url: URL) -> AVPlayerItem? {
         
-        guard self.checkFileExisiss(at: url) else {
+        guard self.checkFileExisits(at: url) else {
             return nil
         }
         
