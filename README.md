@@ -11,7 +11,7 @@ macOS 10.14 + Swift 4.2
 
 * darkAqua UI with macOS 10.14 and vibrantDark UI with macOS 10.13
 * Drag and Drop music files to play
-* Last and Next music button enable state logic control according to the number of drop music files and playing music's index in those files.
+* Last and Next music button enable state logic control according to the number of dropped music files and playing music's index in those files.
 * Play and Pause button control
 * ProceseSlider control
 
