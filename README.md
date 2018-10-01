@@ -10,6 +10,7 @@ macOS 10.14 + Swift 4.2
 # Features
 
 * darkAqua UI with macOS 10.14 and vibrantDark UI with macOS 10.13
+* Window reopen after click dock icon
 * Drag and Drop music files to play
 * Last and Next music button enable state logic control according to the number of dropped music files and index of playing music in those files.
 * Play and Pause button control

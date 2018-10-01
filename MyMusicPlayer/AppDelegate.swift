@@ -16,9 +16,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return windowController
     }()
     
+    var playerWindowNumber : Int! = nil
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         self.windowController.showWindow(self)
+        
+        guard let playerWindow = NSApp.mainWindow else {
+            return
+        }
+        playerWindowNumber = playerWindow.windowNumber
+    }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        
+        if !flag {
+            let playerWindow : NSWindow? = NSApp.window(withWindowNumber: playerWindowNumber)
+            playerWindow?.makeKeyAndOrderFront(sender)
+            return true
+        }
+        else {
+            return false
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
