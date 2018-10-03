@@ -42,7 +42,9 @@ class PlayerViewModel: NSObject {
             case AVPlayerItem.Status.unknown:
                 break
             case AVPlayerItem.Status.readyToPlay:
-                self.passReayToPlayInfoToViewController()
+                let musicMetaInfo: (title: String, cover: NSImage?, artist: String, totalTime: String, sliderMaxValue: Double) = self.getMusicMetaInfoTuple()
+                self.playerViewController?.setMusicMetaInfoUI(metaInfo: musicMetaInfo)
+                self.createTimerObserver()
                 break
             case AVPlayerItem.Status.failed:
                 break
@@ -53,23 +55,25 @@ class PlayerViewModel: NSObject {
         }
     }
     
-    private func passReayToPlayInfoToViewController() {
-        let titleArtist: (title: String, artist: String) = self.playerInstance.currentItem!.asset.titleArtist
-        let totalTimeDouble: Double = Util.convertCMTimeToSeconds(time: self.playerInstance.currentItem!.duration)!
-        let totalTimeString: String = Util.convertSecondsForReading(second: totalTimeDouble)
+    private func getMusicMetaInfoTuple() -> (title: String, cover: NSImage?, artist: String, totalTime: String, sliderMaxValue: Double) {
+        var musicMetaInfo: (title: String, cover: NSImage?, artist: String, totalTime: String, sliderMaxValue: Double) = (title: "", cover: nil, artist: "", totalTime: "", sliderMaxValue: 0.0)
         
-        self.playerViewController?.playerView.titleLabel.stringValue = titleArtist.title
+        let titleArtist: (title: String, artist: String) = self.playerInstance.currentItem!.asset.titleArtist
+        musicMetaInfo.title = titleArtist.title
+        musicMetaInfo.artist = titleArtist.artist
+        let totalTimeDouble: Double = Util.convertCMTimeToSeconds(time: self.playerInstance.currentItem!.duration)!
+        musicMetaInfo.sliderMaxValue = totalTimeDouble
+        let totalTimeString: String = Util.convertSecondsForReading(second: totalTimeDouble)
+        musicMetaInfo.totalTime = totalTimeString
+        
         if let cover = self.playerInstance.currentItem!.asset.cover {
-            self.playerViewController?.playerView.coverImgBtn.image = cover
+            musicMetaInfo.cover = cover
         }
         else {
-            self.playerViewController?.playerView.coverImgBtn.image = NSImage(named: NSImage.touchBarPlayTemplateName)
+            musicMetaInfo.cover = NSImage(named: NSImage.touchBarPlayTemplateName)
         }
-        self.playerViewController?.playerView.artistLabel.stringValue = titleArtist.artist
-        self.playerViewController?.playerView.totalTimeLabel.stringValue = totalTimeString
-        self.playerViewController?.playerView.processSlider.maxValue = totalTimeDouble
         
-        self.createTimerObserver()
+        return musicMetaInfo
     }
     
     private func createTimerObserver() {

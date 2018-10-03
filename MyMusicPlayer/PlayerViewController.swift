@@ -121,3 +121,18 @@ extension PlayerViewController {
         self.playerView.nextMusicBtn.isEnabled = btnIsEnable.nextIsEnable
     }
 }
+
+extension PlayerViewController {
+    internal func setMusicMetaInfoUI(metaInfo tuple: (title: String, cover: NSImage?, artist: String, totalTime: String, sliderMaxValue: Double)) {
+        self.playerView.titleLabel.stringValue = tuple.title
+        if let cover = tuple.cover {
+            self.playerView.coverImgBtn.image = cover
+        }
+        else {
+            self.playerView.coverImgBtn.image = NSImage(named: NSImage.touchBarPlayTemplateName)
+        }
+        self.playerView.artistLabel.stringValue = tuple.artist
+        self.playerView.totalTimeLabel.stringValue = tuple.totalTime
+        self.playerView.processSlider.maxValue = tuple.sliderMaxValue
+    }
+}

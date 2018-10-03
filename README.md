@@ -1,5 +1,5 @@
 # MyMusicPlayer
-A simple macOS Music Player written Programmatically(**No StoryBoard**) in Swift with a very basic **MVVM** Structure(Not Strict MVVM) .
+A simple macOS Music Player written Programmatically(**No StoryBoard**) in Swift with a basic **MVVM** Structure .
 
 ![MyMusicPlayer](./MyMusicPlayer.png)
 
