@@ -10,9 +10,9 @@ import Foundation
 import CoreMedia
 
 struct Util {
-    static func convertCMTimeToSeconds(time : CMTime) -> TimeInterval? {
+    static func convertCMTimeToSeconds(time : CMTime) -> TimeInterval {
         guard time.value != 0 && time.timescale != 0 else {
-            return nil
+            return 0.0
         }
         return Double.init(time.value / Int64(time.timescale))
     }

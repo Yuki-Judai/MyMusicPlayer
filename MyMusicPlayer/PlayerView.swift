@@ -114,9 +114,9 @@ extension PlayerView {
         
         button.frame = NSRect(x: 90, y: 360, width: 300, height: 300)
         button.wantsLayer = true
-        button.layer?.cornerRadius = 16
-        button.layer?.borderWidth = 6
-        button.layer?.borderColor = NSColor.systemGray.cgColor
+        button.layer?.cornerRadius = 12
+        button.layer?.borderWidth = 8
+        button.layer?.borderColor = CGColor(red: 120/255, green: 140/255, blue: 200/255, alpha: 1)
         
         self.coverImgBtn = button
     }

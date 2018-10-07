@@ -140,7 +140,7 @@ extension PlayerViewModel {
             let titleArtist: (title: String, artist: String) = self.playerInstance.currentItem!.asset.titleArtist
             musicMetaInfo.title = titleArtist.title
             musicMetaInfo.artist = titleArtist.artist
-            let totalTimeDouble: Double = Util.convertCMTimeToSeconds(time: self.playerInstance.currentItem!.duration)!
+            let totalTimeDouble: Double = Util.convertCMTimeToSeconds(time: self.playerInstance.currentItem!.duration)
             musicMetaInfo.sliderMaxValue = totalTimeDouble
             let totalTimeString: String = Util.convertSecondsForReading(second: totalTimeDouble)
             musicMetaInfo.totalTime = totalTimeString
@@ -158,7 +158,8 @@ extension PlayerViewModel {
         internal func createTimerObserver() {
             if self.playbackTimerObserver == nil {
                 self.playbackTimerObserver = self.playerInstance.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: nil, using: { (time : CMTime) in
-                    self.weakModel?.playerViewController?.updateCurTimeAndSliderPositionUI(curTime: Util.convertSecondsForReading(second: Util.convertCMTimeToSeconds(time: time) ?? 0), sliderValue: Double(Util.convertCMTimeToSeconds(time: time) ?? 0))
+                    let seconds: TimeInterval = Util.convertCMTimeToSeconds(time: time)
+                    self.weakModel?.playerViewController?.updateCurTimeAndSliderPositionUI(curTime: Util.convertSecondsForReading(second: seconds), sliderValue: seconds)
                 })
             }
             else {
