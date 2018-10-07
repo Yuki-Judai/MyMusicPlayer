@@ -23,9 +23,5 @@ class PlayerWindow: NSWindow {
         } else {
             self.appearance = NSAppearance(named: NSAppearance.Name.vibrantDark)
         }
-        
-//        self.titleVisibility = NSWindow.TitleVisibility.hidden
-//        self.styleMask.remove(NSWindow.StyleMask.titled )
-        self.backgroundColor = .clear
     }
 }

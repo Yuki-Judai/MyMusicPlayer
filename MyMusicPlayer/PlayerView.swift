@@ -33,8 +33,6 @@ class PlayerView: NSView {
         visualEffect.blendingMode = NSVisualEffectView.BlendingMode.behindWindow
         visualEffect.material = NSVisualEffectView.Material.hudWindow
         visualEffect.state = NSVisualEffectView.State.active
-//        visualEffect.wantsLayer = true
-//        visualEffect.layer?.cornerRadius = 8.0
         return visualEffect
     }()
     
