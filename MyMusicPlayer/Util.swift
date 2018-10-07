@@ -10,7 +10,6 @@ import Foundation
 import CoreMedia
 
 struct Util {
-    
     static func convertCMTimeToSeconds(time : CMTime) -> TimeInterval? {
         guard time.value != 0 && time.timescale != 0 else {
             return nil
@@ -19,7 +18,6 @@ struct Util {
     }
     
     static func convertSecondsForReading(second : Double) -> String {
-        
         let date : Date = Date.init(timeIntervalSince1970: second)
         let formatter : DateFormatter = DateFormatter.init()
         

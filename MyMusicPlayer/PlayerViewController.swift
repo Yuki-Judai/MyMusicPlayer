@@ -6,13 +6,13 @@
 //  Copyright © 2018 yume. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 import AVFoundation
 
 class PlayerViewController: NSViewController, PlayerViewDragDelegate {
     
     lazy var playerView: PlayerView = {
-        let frame: CGRect = CGRect(x: 0, y: 0, width: 480, height: 600)
+        let frame: CGRect = CGRect(x: 0, y: 0, width: 480, height: 720)
         let view: PlayerView = PlayerView(frame: frame)
         return view
     }()
@@ -37,16 +37,15 @@ class PlayerViewController: NSViewController, PlayerViewDragDelegate {
     }
     
     func dropFileURLsToPlay(view dragView: PlayerView, fileURLs draggedFileURLs: [URL]) {
-        
         if self.playerViewModel != nil {
             self.playerViewModel.removeObservers()
         }
         
         self.playerViewModel = PlayerViewModel(url: draggedFileURLs[0])
         for url in draggedFileURLs {
-            self.playerViewModel.fileURLs.append(url)
+            self.playerViewModel.saveURL(url: url)
         }
-        self.playerViewModel.fileURLToPlay = draggedFileURLs[0]
+        self.playerViewModel.saveURLToPlay(url: draggedFileURLs[0])
         self.playerViewModel.playerViewController = self
         
         self.setLastNextBtnEnableState()
@@ -123,16 +122,22 @@ extension PlayerViewController {
 }
 
 extension PlayerViewController {
-    internal func setMusicMetaInfoUI(metaInfo tuple: (title: String, cover: NSImage?, artist: String, totalTime: String, sliderMaxValue: Double)) {
+    
+    internal func setMusicMetaInfoUI(metaInfo tuple: (title: String, artist: String, totalTime: String, sliderMaxValue: Double, cover: NSImage?)) {
         self.playerView.titleLabel.stringValue = tuple.title
+        self.playerView.artistLabel.stringValue = tuple.artist
+        self.playerView.totalTimeLabel.stringValue = tuple.totalTime
+        self.playerView.processSlider.maxValue = tuple.sliderMaxValue
         if let cover = tuple.cover {
             self.playerView.coverImgBtn.image = cover
         }
         else {
             self.playerView.coverImgBtn.image = NSImage(named: NSImage.touchBarPlayTemplateName)
         }
-        self.playerView.artistLabel.stringValue = tuple.artist
-        self.playerView.totalTimeLabel.stringValue = tuple.totalTime
-        self.playerView.processSlider.maxValue = tuple.sliderMaxValue
+    }
+    
+    internal func updateCurTimeAndSliderPositionUI(curTime: String, sliderValue: Double) {
+        self.playerView.curtimeLabel.stringValue = curTime
+        self.playerView.processSlider.doubleValue = sliderValue
     }
 }

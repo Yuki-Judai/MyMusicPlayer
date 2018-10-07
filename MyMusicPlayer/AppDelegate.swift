@@ -6,7 +6,7 @@
 //  Copyright © 2018 yume. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 
 //@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -19,7 +19,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var playerWindowNumber : Int! = nil
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
         self.windowController.showWindow(self)
         
         guard let playerWindow = NSApp.mainWindow else {
@@ -29,7 +28,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        
         if !flag {
             let playerWindow : NSWindow? = NSApp.window(withWindowNumber: playerWindowNumber)
             playerWindow?.makeKeyAndOrderFront(sender)
@@ -46,4 +44,3 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
 }
-

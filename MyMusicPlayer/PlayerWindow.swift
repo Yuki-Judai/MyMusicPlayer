@@ -6,7 +6,7 @@
 //  Copyright © 2018 yume. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 
 class PlayerWindow: NSWindow {
     
@@ -15,11 +15,17 @@ class PlayerWindow: NSWindow {
         
         self.title = "MyMusicPlayer"
         self.titlebarAppearsTransparent = true
+        self.styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
         self.isMovableByWindowBackground = true
+        
         if #available(OSX 10.14, *) {
             self.appearance = NSAppearance(named: NSAppearance.Name.darkAqua)
         } else {
             self.appearance = NSAppearance(named: NSAppearance.Name.vibrantDark)
         }
+        
+//        self.titleVisibility = NSWindow.TitleVisibility.hidden
+//        self.styleMask.remove(NSWindow.StyleMask.titled )
+        self.backgroundColor = .clear
     }
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2018 yume. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 
 protocol PlayerViewDragDelegate {
     func dropFileURLsToPlay(view dragView : PlayerView, fileURLs draggedFileURLs : [URL])
@@ -27,9 +27,22 @@ class PlayerView: NSView {
     
     var dragDelegate : PlayerViewDragDelegate?
     
+    lazy var visualEffectView: NSVisualEffectView = {
+        let frame: CGRect = CGRect(x: 0, y: 0, width: 480, height: 720)
+        let visualEffect: NSVisualEffectView = NSVisualEffectView(frame: frame)
+        visualEffect.blendingMode = NSVisualEffectView.BlendingMode.behindWindow
+        visualEffect.material = NSVisualEffectView.Material.hudWindow
+        visualEffect.state = NSVisualEffectView.State.active
+//        visualEffect.wantsLayer = true
+//        visualEffect.layer?.cornerRadius = 8.0
+        return visualEffect
+    }()
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
+        
         self.registerForDraggedTypes([NSPasteboard.PasteboardType.fileURL])
+        self.addSubview(self.visualEffectView)
         self.setUpUI()
     }
     
@@ -61,24 +74,24 @@ extension PlayerView {
     
     func buildTitleLabel()  {
         self.titleLabel = self.buildBasicLabel(string: "Title")
-        self.titleLabel.frame = NSRect(x: 0, y: 560, width: 480, height: 20)
+        self.titleLabel.frame = NSRect(x: 0, y: 660, width: 480, height: 20)
     }
     
     func buildArtistLabel()  {
         self.artistLabel = self.buildBasicLabel(string: "Artist")
-        self.artistLabel.frame = NSRect(x: 0, y: 260, width: 480, height: 20)
+        self.artistLabel.frame = NSRect(x: 0, y: 330, width: 480, height: 20)
         self.artistLabel.alignment = NSTextAlignment.center
     }
     
     func buildCurtimeLabel()  {
         self.curtimeLabel = self.buildBasicLabel(string: "00:00")
-        self.curtimeLabel.frame = NSRect(x: 0, y: 200, width: 100, height: 20)
+        self.curtimeLabel.frame = NSRect(x: 0, y: 270, width: 100, height: 20)
         self.curtimeLabel.alignment = NSTextAlignment.right
     }
     
     func buildTotalTimeLabel()  {
         self.totalTimeLabel = self.buildBasicLabel(string: "--:--")
-        self.totalTimeLabel.frame = NSRect(x: 380, y: 200, width: 100, height: 20)
+        self.totalTimeLabel.frame = NSRect(x: 380, y: 270, width: 100, height: 20)
         self.totalTimeLabel.alignment = NSTextAlignment.left
     }
     
@@ -93,11 +106,13 @@ extension PlayerView {
         let initialCoverImg: NSImage = NSImage(named: NSImage.touchBarPlayTemplateName)!
         let button: NSButton = NSButton(image: initialCoverImg, target: nil, action: nil)
         button.isBordered = true
+        button.isEnabled = false
         button.imageScaling = NSImageScaling.scaleProportionallyUpOrDown
         button.bezelStyle = NSButton.BezelStyle.shadowlessSquare
         button.setButtonType(NSButton.ButtonType.momentaryPushIn)
+        ((button.cell) as! NSButtonCell).imageDimsWhenDisabled = false
         
-        button.frame = NSRect(x: 115, y: 300, width: 250, height: 250)
+        button.frame = NSRect(x: 90, y: 360, width: 300, height: 300)
         button.wantsLayer = true
         button.layer?.cornerRadius = 16
         button.layer?.borderWidth = 6
@@ -116,7 +131,7 @@ extension PlayerView {
         button.imageScaling = NSImageScaling.scaleNone
         button.bezelStyle = NSButton.BezelStyle.regularSquare
         button.setButtonType(NSButton.ButtonType.toggle)
-        button.frame = NSRect(x: 216, y: 100, width: 48, height: 48)
+        button.frame = NSRect(x: 216, y: 170, width: 48, height: 48)
         
         self.playOrPauseBtn = button
     }
@@ -129,7 +144,7 @@ extension PlayerView {
         button.imageScaling = NSImageScaling.scaleNone
         button.bezelStyle = NSButton.BezelStyle.rounded
         button.setButtonType(NSButton.ButtonType.momentaryPushIn)
-        button.frame = NSRect(x: 150, y: 100, width: 48, height: 48)
+        button.frame = NSRect(x: 150, y: 170, width: 48, height: 48)
         
         self.lastMusicBtn = button
     }
@@ -142,7 +157,7 @@ extension PlayerView {
         button.imageScaling = NSImageScaling.scaleNone
         button.bezelStyle = NSButton.BezelStyle.rounded
         button.setButtonType(NSButton.ButtonType.momentaryPushIn)
-        button.frame = NSRect(x: 284, y: 100, width: 48, height: 48)
+        button.frame = NSRect(x: 284, y: 170, width: 48, height: 48)
         
         self.nextMusicBtn = button
     }
@@ -169,7 +184,7 @@ extension PlayerView {
     }
     
     func buildProcessSlider() {
-        let processSlider: NSSlider = NSSlider(frame: NSRect(x: 120, y: 200, width: 250, height: 20))
+        let processSlider: NSSlider = NSSlider(frame: NSRect(x: 120, y: 270, width: 250, height: 20))
         processSlider.isContinuous = true
         
         self.processSlider = processSlider

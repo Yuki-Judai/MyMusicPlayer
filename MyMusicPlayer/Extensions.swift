@@ -14,7 +14,6 @@ extension AVAsset {
         var titleArtist: (title: String , artist: String) = (title: "" , artist: "")
         
         for commonMetaDataItem in self.commonMetadata {
-            
             guard let commonKey: AVMetadataKey = commonMetaDataItem.commonKey else {
                 return titleArtist
             }
@@ -36,7 +35,6 @@ extension AVAsset {
         var cover: NSImage? = nil
         
         for commonMetaDataItem in self.commonMetadata {
-            
             guard let commonKey: AVMetadataKey = commonMetaDataItem.commonKey else {
                 return cover
             }
