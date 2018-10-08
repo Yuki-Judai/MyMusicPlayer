@@ -14,7 +14,9 @@ macOS 10.14 + Swift 4.2
 * Drag and Drop music files to play
 * Last and Next music button enable state logic control according to the number of dropped music files and index of playing music in those files
 * Play and Pause button control
+* Play Button is disabled when the music ended play
 * ProcessSlider control
+* PlayList Save and Load without UI yet
 
 # TODO
 
