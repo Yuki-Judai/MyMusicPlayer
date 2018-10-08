@@ -22,7 +22,6 @@ macOS 10.14 + Swift 4.2
 
 * File Open to play menu
 
-* Save and Load PlayList
 * PlayList UI with a table includes title and artist at right side
 * Auto play mode and Loop mode
 * ......
