@@ -13,6 +13,8 @@ class PlayerViewModel: NSObject {
     private var playerEntity: PlayerInstanceHolder! = nil
     internal var playerViewController: PlayerViewController? = nil
     
+    private var didEndPlay: Bool = false
+    
     init(url: URL) {
         super.init()
         
@@ -26,11 +28,20 @@ class PlayerViewModel: NSObject {
     
     private func turnOffPlayOrPauseBtn() {
         self.playerViewController?.turnOffPlayOrPauseBtn()
+        self.didEndPlay = true
     }
     
 }
 
 extension PlayerViewModel {
+    
+    internal func isDidEndPlay() -> Bool {
+        return self.didEndPlay
+    }
+    
+    internal func reSetDidEndPlay() {
+        self.didEndPlay = false
+    }
     
     internal func removeObservers() {
         self.playerEntity.removeObservers()

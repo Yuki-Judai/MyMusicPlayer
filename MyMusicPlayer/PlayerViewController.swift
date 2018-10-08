@@ -29,14 +29,14 @@ class PlayerViewController: NSViewController, PlayerViewDragDelegate {
         
         self.setTargetAndActions()
         
-        self.loadPlayListToPlay()
+        self.loadPlayListReadyToPlay()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func loadPlayListToPlay() {
+    private func loadPlayListReadyToPlay() {
         if self.loadPlayList() {
             self.playerViewModel = PlayerViewModel(url: self.lastPlayedURL)
             
@@ -45,7 +45,7 @@ class PlayerViewController: NSViewController, PlayerViewDragDelegate {
             
             self.playerViewModel.playerViewController = self
             self.setLastNextBtnEnableState()
-            self.turnOnPlayBtnAndPlay()
+            self.playerView.playOrPauseBtn.isEnabled = true
         }
         else {
             return
@@ -82,7 +82,10 @@ extension PlayerViewController {
     private func handlePlayOrPause() {
         switch self.playerView.playOrPauseBtn.state {
         case NSControl.StateValue.on:
-            self.seekToZero()
+            if self.playerViewModel.isDidEndPlay() {
+                self.playerViewModel.reSetDidEndPlay()
+                self.seekToZero()
+            }
             self.playerViewModel.playMusic()
         default:
             self.playerViewModel.pauseMusic()
