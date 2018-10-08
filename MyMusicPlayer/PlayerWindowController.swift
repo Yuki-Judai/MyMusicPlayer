@@ -15,7 +15,7 @@ class PlayerWindowController: NSWindowController {
     }
     
     lazy var playerWindow: PlayerWindow? = {
-        let frame: CGRect = CGRect(x: 0, y: 0, width: 480, height: 720)
+        let frame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 480)
         let style: NSWindow.StyleMask = [.titled, .closable, .miniaturizable]
         let back: NSWindow.BackingStoreType = .buffered
         let window: PlayerWindow = PlayerWindow(contentRect: frame, styleMask: style, backing: back, defer: false)

@@ -20,6 +20,14 @@ class PlayerViewModel: NSObject {
         self.playerEntity.weakModel = self
     }
     
+    deinit {
+        self.removeObservers()
+    }
+    
+    private func turnOffPlayOrPauseBtn() {
+        self.playerViewController?.turnOffPlayOrPauseBtn()
+    }
+    
 }
 
 extension PlayerViewModel {
@@ -34,6 +42,18 @@ extension PlayerViewModel {
     
     internal func saveURLToPlay(url: URL) {
         self.playerEntity.fileURLToPlay = url
+    }
+    
+    internal func getFileURLs() -> [URL] {
+        return self.playerEntity.fileURLs
+    }
+    
+    internal func getFileURLToPlay() -> URL {
+        return self.playerEntity.fileURLToPlay
+    }
+    
+    internal func setFileURLs(urls: [URL]) {
+        self.playerEntity.fileURLs = urls
     }
 }
 
@@ -50,6 +70,15 @@ extension PlayerViewModel {
             super.init()
             
             _ = self.createPlayerInstance(with: self.createPlayerItem(with: url))
+        }
+        
+        @objc
+        private func turnOffPlayOrPauseBtn() {
+            self.weakModel?.turnOffPlayOrPauseBtn()
+        }
+        
+        internal func removeAVPlayerItemDidPlayToEndTimeObserver() {
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         }
         
         internal func checkFileExisits(at url: URL) -> Bool {
@@ -124,6 +153,7 @@ extension PlayerViewModel {
                     let musicMetaInfo: (title: String, artist: String, totalTime: String, sliderMaxValue: Double, cover: NSImage?) = self.getMusicMetaInfoTuple()
                     self.weakModel?.playerViewController?.setMusicMetaInfoUI(metaInfo: musicMetaInfo)
                     self.createTimerObserver()
+                    NotificationCenter.default.addObserver(self, selector: #selector(turnOffPlayOrPauseBtn), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
                     break
                 case AVPlayerItem.Status.failed:
                     break
@@ -174,6 +204,7 @@ extension PlayerViewModel {
                 self.playerInstance.removeTimeObserver(self.playbackTimerObserver!)
                 self.playbackTimerObserver = nil
             }
+            self.removeAVPlayerItemDidPlayToEndTimeObserver()
         }
     }
     
@@ -213,6 +244,10 @@ extension PlayerViewModel {
     
     internal func seekTo(slider: NSSlider) {
         self.playerEntity.playerInstance.seek(to: CMTime(seconds: slider.doubleValue, preferredTimescale: 100), toleranceBefore: CMTimeMake(value: 1, timescale: 100), toleranceAfter: CMTimeMake(value: 1, timescale: 100))
+    }
+    
+    internal func seekToZero() {
+        self.playerEntity.playerInstance.seek(to: CMTime(seconds: 0.0, preferredTimescale: 100), toleranceBefore: CMTimeMake(value: 1, timescale: 100), toleranceAfter: CMTimeMake(value: 1, timescale: 100))
     }
     
     internal func getIndexOfPlayingFile() -> Int? {

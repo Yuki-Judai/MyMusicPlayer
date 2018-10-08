@@ -12,17 +12,15 @@ import AVFoundation
 class PlayerViewController: NSViewController, PlayerViewDragDelegate {
     
     lazy var playerView: PlayerView = {
-        let frame: CGRect = CGRect(x: 0, y: 0, width: 480, height: 720)
+        let frame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 480)
         let view: PlayerView = PlayerView(frame: frame)
         return view
     }()
     
     private var playerViewModel: PlayerViewModel! = nil
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-    }
+    
+    private var playListURLs: [URL] = []
+    private var lastPlayedURL: URL! = nil
     
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -30,10 +28,28 @@ class PlayerViewController: NSViewController, PlayerViewDragDelegate {
         self.view = self.playerView
         
         self.setTargetAndActions()
+        
+        self.loadPlayListToPlay()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func loadPlayListToPlay() {
+        if self.loadPlayList() {
+            self.playerViewModel = PlayerViewModel(url: self.lastPlayedURL)
+            
+            self.playerViewModel.setFileURLs(urls: self.playListURLs)
+            self.playerViewModel.saveURLToPlay(url: self.lastPlayedURL)
+            
+            self.playerViewModel.playerViewController = self
+            self.setLastNextBtnEnableState()
+            self.turnOnPlayBtnAndPlay()
+        }
+        else {
+            return
+        }
     }
     
     func dropFileURLsToPlay(view dragView: PlayerView, fileURLs draggedFileURLs: [URL]) {
@@ -47,6 +63,8 @@ class PlayerViewController: NSViewController, PlayerViewDragDelegate {
         }
         self.playerViewModel.saveURLToPlay(url: draggedFileURLs[0])
         self.playerViewModel.playerViewController = self
+        
+        self.savePlayList()
         
         self.setLastNextBtnEnableState()
         self.turnOnPlayBtnAndPlay()
@@ -64,6 +82,7 @@ extension PlayerViewController {
     private func handlePlayOrPause() {
         switch self.playerView.playOrPauseBtn.state {
         case NSControl.StateValue.on:
+            self.seekToZero()
             self.playerViewModel.playMusic()
         default:
             self.playerViewModel.pauseMusic()
@@ -79,6 +98,10 @@ extension PlayerViewController {
     private func seekToTime() {
         self.playerViewModel.seekTo(slider: self.playerView.processSlider)
         self.turnOnPlayBtnAndPlay()
+    }
+    
+    private func seekToZero() {
+        self.playerViewModel.seekToZero()
     }
     
     private func turnOnPlayBtnAndPlay() {
@@ -123,6 +146,49 @@ extension PlayerViewController {
 
 extension PlayerViewController {
     
+    private func savePlayList() {
+        let fileURLs: [URL] = self.playerViewModel.getFileURLs()
+        
+        guard fileURLs.count > 0 else {
+            UserDefaults.standard.set(false, forKey: "hasPlayList")
+            return
+        }
+        var filePaths: [String] = []
+        for url in fileURLs {
+            filePaths.append(url.path)
+        }
+        
+        let filePathToPlay: String = self.playerViewModel.getFileURLToPlay().path
+        UserDefaults.standard.set(filePaths, forKey: "playListPaths")
+        UserDefaults.standard.set(filePathToPlay, forKey: "LastPlayedPath")
+        
+        UserDefaults.standard.set(true, forKey: "hasPlayList")
+        print("Saved Successlly !")
+    }
+    
+    private func loadPlayList() -> Bool {
+        guard let hasPlayList: Any = UserDefaults.standard.value(forKey: "hasPlayList"),  (hasPlayList as! Bool) else {
+            return false
+        }
+        let filePaths: [String] = UserDefaults.standard.value(forKey: "playListPaths") as! [String]
+        var fileURLs: [URL] = []
+        for path in filePaths {
+            fileURLs.append(URL(fileURLWithPath: path))
+        }
+        self.playListURLs = fileURLs
+        
+        let filePathToPlay: String = UserDefaults.standard.value(forKey: "LastPlayedPath") as! String
+        
+        self.lastPlayedURL = URL(fileURLWithPath: filePathToPlay)
+        
+        print("Loaded Successlly !")
+        
+        return true
+    }
+}
+
+extension PlayerViewController {
+    
     internal func setMusicMetaInfoUI(metaInfo tuple: (title: String, artist: String, totalTime: String, sliderMaxValue: Double, cover: NSImage?)) {
         self.playerView.titleLabel.stringValue = tuple.title
         self.playerView.artistLabel.stringValue = tuple.artist
@@ -139,5 +205,9 @@ extension PlayerViewController {
     internal func updateCurTimeAndSliderPositionUI(curTime: String, sliderValue: Double) {
         self.playerView.curtimeLabel.stringValue = curTime
         self.playerView.processSlider.doubleValue = sliderValue
+    }
+    
+    internal func turnOffPlayOrPauseBtn() {
+        self.playerView.playOrPauseBtn.state = NSControl.StateValue.off
     }
 }
